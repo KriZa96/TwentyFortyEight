@@ -6,17 +6,16 @@
 
 class TwentyFortyEightEngine {
 public:
-	enum Direction { LEFT = 0, RIGHT = 1, UP = 2, DOWN = 3 };
-
 	TwentyFortyEightEngine();
 
+	enum Direction { LEFT = 0, RIGHT = 1, UP = 2, DOWN = 3 };
 	void reset();
-    bool isGameOver() const;
-    bool isGameWon() const;
+	bool isGameOver() const;
+	bool isGameWon() const;
 	int getScore() const;
 	int getTileValue(int row, int col) const;
 	void processMove(Direction direction);
-    std::uint8_t getGridLength() const;
+	std::uint8_t getGridLength() const;
 
 private:
 	std::uint8_t gridLength;
