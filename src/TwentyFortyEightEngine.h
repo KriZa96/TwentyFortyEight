@@ -16,9 +16,10 @@ public:
 	int getScore() const;
 	int getTileValue(int row, int col) const;
 	void processMove(Direction direction);
+    std::uint8_t getGridLength() const;
 
 private:
-	std::uint8_t grid_size_;
+	std::uint8_t gridLength;
 	std::vector<std::vector<int>> grid;
 	int score;
 	bool gameOver;
@@ -27,7 +28,7 @@ private:
 	std::mt19937 gen;
 
 	void addRandomTile();
-	bool canMove();
+	bool canMove() const;
 	bool moveLeft();
 	bool moveRight();
 	bool moveUp();

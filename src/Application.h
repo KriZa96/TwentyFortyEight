@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Renderer.h"
+#include "Renderer.h"
 #include "../DisplayManager.h"
 #include "../InputManager.h"
 #include "TwentyFortyEightEngine.h"
@@ -10,7 +10,7 @@ class Application {
 private:
 	std::unique_ptr<DisplayManager> displayManager;
 	std::unique_ptr<InputManager> inputManager;
-    std::unique_ptr<TwentyFortyEightEngine> game;
+    std::shared_ptr<TwentyFortyEightEngine> game;
 	std::unique_ptr<Renderer> renderer;
 
 public:

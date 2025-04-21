@@ -12,8 +12,9 @@
 Application::Application()
     : displayManager(std::make_unique<DisplayManager>()),
     inputManager(std::make_unique<InputManager>(displayManager->getWindow())),
-    game(std::make_unique<TwentyFortyEightEngine>()),
-    renderer(std::make_unique<Renderer>()) {
+    game(std::make_shared<TwentyFortyEightEngine>()),
+      renderer(std::make_unique<Renderer>(game, displayManager->getWidth(),
+                                          displayManager->getHeight())) {
 
     inputManager->setGame(game.get());
     inputManager->setupKeyCallback();
@@ -40,12 +41,7 @@ void Application::run() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        renderer->renderGame(
-            *game,
-            [this]() { game->reset(); },
-            displayManager->getWidth(),
-            displayManager->getHeight()
-        );
+        renderer->renderGame();
         ImGui::Render();
 
         displayManager->clearScreen();
