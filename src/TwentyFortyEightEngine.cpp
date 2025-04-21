@@ -1,23 +1,10 @@
-#pragma once
-
 #include <random>
 #include <vector>
 
+#include "TwentyFortyEightEngine.h"
 
-class TwentyFortyEight {
- private:
-  std::uint8_t grid_size_;
-  std::vector<std::vector<int>> grid;
-  int score;
-  bool gameOver;
-  bool gameWon;
-  std::random_device rd;
-  std::mt19937 gen;
 
- public:
-  enum Direction { LEFT = 0, RIGHT = 1, UP = 2, DOWN = 3 };
-
-  TwentyFortyEight()
+  TwentyFortyEightEngine::TwentyFortyEightEngine()
       : grid_size_(4),
         grid(grid_size_, std::vector<int>(grid_size_, 0)),
         score(0),
@@ -28,7 +15,7 @@ class TwentyFortyEight {
     addRandomTile();
   }
 
-  void reset() {
+  void TwentyFortyEightEngine::reset() {
     for (int i = 0; i < grid_size_; i++) {
       for (int j = 0; j < grid_size_; j++) {
         grid[i][j] = 0;
@@ -41,12 +28,14 @@ class TwentyFortyEight {
     addRandomTile();
   }
 
-  bool isGameOver() const { return gameOver; }
-  bool isGameWon() const { return gameWon; }
-  int getScore() const { return score; }
-  int getTileValue(int row, int col) const { return grid[row][col]; }
+  bool TwentyFortyEightEngine::isGameOver() const { return gameOver; }
+  bool TwentyFortyEightEngine::isGameWon() const { return gameWon; }
+  int TwentyFortyEightEngine::getScore() const { return score; }
+  int TwentyFortyEightEngine::getTileValue(int row, int col) const {
+    return grid[row][col];
+  }
 
-  void addRandomTile() {
+  void TwentyFortyEightEngine::addRandomTile() {
     std::vector<std::pair<int, int>> emptyCells;
     for (int i = 0; i < grid_size_; i++) {
       for (int j = 0; j < grid_size_; j++) {
@@ -58,7 +47,8 @@ class TwentyFortyEight {
 
     if (emptyCells.empty()) return;
 
-    std::uniform_int_distribution<> disCells(0, static_cast<int>(emptyCells.size()) - 1);
+    std::uniform_int_distribution<> disCells(
+        0, static_cast<int>(emptyCells.size()) - 1);
     std::uniform_int_distribution<> disValue(1, 10);
 
     int idx = disCells(gen);
@@ -68,7 +58,7 @@ class TwentyFortyEight {
     grid[row][col] = (disValue(gen) <= 9) ? 2 : 4;
   }
 
-  bool canMove() {
+  bool TwentyFortyEightEngine::canMove() {
     for (int i = 0; i < grid_size_; i++) {
       for (int j = 0; j < grid_size_; j++) {
         if (grid[i][j] == 0) return true;
@@ -90,7 +80,7 @@ class TwentyFortyEight {
     return false;
   }
 
-  void processMove(Direction direction) {
+  void TwentyFortyEightEngine::processMove(Direction direction) {
     bool moved = false;
     switch (direction) {
       case LEFT:
@@ -115,8 +105,7 @@ class TwentyFortyEight {
     }
   }
 
- private:
-  bool moveLeft() {
+  bool TwentyFortyEightEngine::moveLeft() {
     bool moved = false;
     for (int i = 0; i < grid_size_; i++) {
       for (int j = 0; j < grid_size_; j++) {
@@ -141,7 +130,7 @@ class TwentyFortyEight {
     return moved;
   }
 
-  bool moveRight() {
+  bool TwentyFortyEightEngine::moveRight() {
     bool moved = false;
     for (int i = 0; i < grid_size_; i++) {
       for (int j = grid_size_ - 2; j >= 0; j--) {
@@ -160,14 +149,13 @@ class TwentyFortyEight {
             grid[i][col] = 0;
             moved = true;
           }
-          
         }
       }
     }
     return moved;
   }
 
-  bool moveUp() {
+  bool TwentyFortyEightEngine::moveUp() {
     bool moved = false;
     for (int j = 0; j < grid_size_; j++) {
       for (int i = 0; i < grid_size_; i++) {
@@ -192,7 +180,7 @@ class TwentyFortyEight {
     return moved;
   }
 
-  bool moveDown() {
+  bool TwentyFortyEightEngine::moveDown() {
     bool moved = false;
     for (int j = 0; j < grid_size_; j++) {
       for (int i = grid_size_ - 2; i >= 0; i--) {
@@ -216,4 +204,3 @@ class TwentyFortyEight {
     }
     return moved;
   }
-};

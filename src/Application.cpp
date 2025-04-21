@@ -12,16 +12,14 @@
 Application::Application()
     : displayManager(std::make_unique<DisplayManager>()),
     inputManager(std::make_unique<InputManager>(displayManager->getWindow())),
-    game(std::make_unique<TwentyFortyEight>()),
+    game(std::make_unique<TwentyFortyEightEngine>()),
     renderer(std::make_unique<Renderer>()) {
+
     inputManager->setGame(game.get());
     inputManager->setupKeyCallback();
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    (void)io;
-
     ImGui::StyleColorsDark();
 
     ImGui_ImplGlfw_InitForOpenGL(displayManager->getWindow(), true);
@@ -43,10 +41,13 @@ void Application::run() {
         ImGui::NewFrame();
 
         renderer->renderGame(
-            *game, [this]() { game->reset(); }, displayManager->getWidth(),
-            displayManager->getHeight());
-
+            *game,
+            [this]() { game->reset(); },
+            displayManager->getWidth(),
+            displayManager->getHeight()
+        );
         ImGui::Render();
+
         displayManager->clearScreen();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         displayManager->swapBuffers();

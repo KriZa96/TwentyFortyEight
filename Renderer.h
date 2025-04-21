@@ -2,7 +2,7 @@
 
 #include <functional>
 
-#include "TwentyFortyEight.h"
+#include "src/TwentyFortyEightEngine.h"
 #include "imgui.h"
 
 class Renderer {
@@ -60,7 +60,7 @@ class Renderer {
     ImGui::SetWindowFontScale(4);
   }
 
-  void renderGameControls(TwentyFortyEight& game, int width, int height,
+  void renderGameControls(TwentyFortyEightEngine& game, int width, int height,
                           std::function<void()> resetCallback) {
     ImGui::Dummy(ImVec2(0, height * 0.02f));
     ImGui::Text("Score: %d", game.getScore());
@@ -78,7 +78,8 @@ class Renderer {
     ImGui::Separator();
   }
 
-  void renderGameGrid(const TwentyFortyEight& game, const ImVec2& gridStartPos,
+  void renderGameGrid(const TwentyFortyEightEngine& game,
+                      const ImVec2& gridStartPos,
                       float tileSize, float padding) {
     ImDrawList* drawList = ImGui::GetWindowDrawList();
 
@@ -149,7 +150,7 @@ class Renderer {
                   tilePos.y + (tileSize - textSize.y) * 0.5f);
   }
 
-  void renderGameStatus(const TwentyFortyEight& game,
+  void renderGameStatus(const TwentyFortyEightEngine& game,
                         const ImVec2& gridStartPos, float gridSize,
                         float padding, int windowWidth) {
     if (!game.isGameOver() && !game.isGameWon()) return;
@@ -178,7 +179,8 @@ class Renderer {
   }
 
  public:
-  void renderGame(TwentyFortyEight& game, std::function<void()> resetCallback,
+  void renderGame(TwentyFortyEightEngine& game,
+                  std::function<void()> resetCallback,
                   int width, int height) {
     setupGameWindow(width, height);
     renderGameControls(game, width, height, resetCallback);

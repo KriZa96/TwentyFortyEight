@@ -1,12 +1,9 @@
 #pragma once
 
 #include <iostream>
-#include <string>
 
 #define GLFW_DLL
 #include <GLFW/glfw3.h>
-
-#include "imgui_impl_glfw.h"
 
 #ifdef _WIN32
 #include <GL/gl.h>
