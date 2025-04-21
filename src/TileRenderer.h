@@ -8,7 +8,8 @@ public:
 	TileRenderer(float tileSize, float tilePadding);
 	void renderTile(int value, const ImVec2& gridStartPos, int row, int col) const;
 	float getTileSize() const;
-    float getTilePaddingSize() const;
+	float getTilePaddingSize() const;
+
 private:
 	float tileSize_;
 	float tilePaddingSize_;

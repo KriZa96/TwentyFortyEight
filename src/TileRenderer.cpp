@@ -31,32 +31,19 @@ TileRenderer::TileStyle TileRenderer::getTileStyle(int value) const {
 
 ImVec4 TileRenderer::getTileColor(int value) const {
 	switch (value) {
-		case 0:
-			return ImVec4(0.8f, 0.8f, 0.8f, 1.0f);
-		case 2:
-			return ImVec4(0.9f, 0.9f, 0.9f, 1.0f);
-		case 4:
-			return ImVec4(0.9f, 0.9f, 0.8f, 1.0f);
-		case 8:
-			return ImVec4(0.9f, 0.8f, 0.7f, 1.0f);
-		case 16:
-			return ImVec4(0.9f, 0.7f, 0.5f, 1.0f);
-		case 32:
-			return ImVec4(0.9f, 0.6f, 0.4f, 1.0f);
-		case 64:
-			return ImVec4(0.9f, 0.5f, 0.3f, 1.0f);
-		case 128:
-			return ImVec4(0.9f, 0.4f, 0.2f, 1.0f);
-		case 256:
-			return ImVec4(0.9f, 0.3f, 0.1f, 1.0f);
-		case 512:
-			return ImVec4(0.9f, 0.2f, 0.1f, 1.0f);
-		case 1024:
-			return ImVec4(0.9f, 0.1f, 0.1f, 1.0f);
-		case 2048:
-			return ImVec4(0.9f, 0.0f, 0.0f, 1.0f);
-		default:
-			return ImVec4(0.8f, 0.0f, 0.0f, 1.0f);
+		case 0: return ImVec4(0.8f, 0.8f, 0.8f, 1.0f);
+		case 2: return ImVec4(0.9f, 0.9f, 0.9f, 1.0f);
+		case 4: return ImVec4(0.9f, 0.9f, 0.8f, 1.0f);
+		case 8: return ImVec4(0.9f, 0.8f, 0.7f, 1.0f);
+		case 16: return ImVec4(0.9f, 0.7f, 0.5f, 1.0f);
+		case 32: return ImVec4(0.9f, 0.6f, 0.4f, 1.0f);
+		case 64: return ImVec4(0.9f, 0.5f, 0.3f, 1.0f);
+		case 128: return ImVec4(0.9f, 0.4f, 0.2f, 1.0f);
+		case 256: return ImVec4(0.9f, 0.3f, 0.1f, 1.0f);
+		case 512: return ImVec4(0.9f, 0.2f, 0.1f, 1.0f);
+		case 1024: return ImVec4(0.9f, 0.1f, 0.1f, 1.0f);
+		case 2048: return ImVec4(0.9f, 0.0f, 0.0f, 1.0f);
+		default: return ImVec4(0.8f, 0.0f, 0.0f, 1.0f);
 	}
 }
 

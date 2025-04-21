@@ -58,25 +58,21 @@ void Application::start() {
 
 
 void Application::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-  TwentyFortyEightEngine* game = static_cast<TwentyFortyEightEngine*>(glfwGetWindowUserPointer(window));
-  if (!game) return;
+    TwentyFortyEightEngine* game = static_cast<TwentyFortyEightEngine*>(glfwGetWindowUserPointer(window));
+    if (action != GLFW_PRESS || !game || game->isGameOver()) return;
 
-  if (action == GLFW_PRESS) {
-    if (!game->isGameOver()) {
-      switch (key) {
+    switch (key) {
         case GLFW_KEY_LEFT:
-          game->processMove(TwentyFortyEightEngine::LEFT);
-          break;
+            game->processMove(TwentyFortyEightEngine::LEFT);
+            break;
         case GLFW_KEY_RIGHT:
-          game->processMove(TwentyFortyEightEngine::RIGHT);
-          break;
+            game->processMove(TwentyFortyEightEngine::RIGHT);
+            break;
         case GLFW_KEY_UP:
-          game->processMove(TwentyFortyEightEngine::UP);
-          break;
+            game->processMove(TwentyFortyEightEngine::UP);
+            break;
         case GLFW_KEY_DOWN:
-          game->processMove(TwentyFortyEightEngine::DOWN);
-          break;
-      }
+            game->processMove(TwentyFortyEightEngine::DOWN);
+            break;
     }
-  }
 }

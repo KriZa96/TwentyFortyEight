@@ -17,5 +17,5 @@ public:
 
 	void run();
 	static void start();
-    static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 };
