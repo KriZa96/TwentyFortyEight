@@ -9,7 +9,7 @@ endif()
 project("TwentyFortyEight")
 
 
-add_executable (TwentyFortyEight "src/main.cpp" "DisplayManager.h" "TwentyFortyEight.h" "Renderer.h" "InputManager.h" "Application.h")
+add_executable (TwentyFortyEight "src/main.cpp" "DisplayManager.h" "TwentyFortyEight.h" "Renderer.h" "InputManager.h" "src/Application.h" "src/Application.cpp")
 find_package(glad CONFIG REQUIRED)
 target_link_libraries(TwentyFortyEight PRIVATE glad::glad)
 
