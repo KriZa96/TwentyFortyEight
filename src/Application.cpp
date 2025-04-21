@@ -9,23 +9,22 @@
 #include "Application.h"
 
 
-Application::Application()
-    : displayManager(std::make_unique<DisplayManager>()),
-    inputManager(std::make_unique<InputManager>(displayManager->getWindow())),
+Application::Application() : 
+    displayManager(std::make_unique<DisplayManager>()),
     game(std::make_shared<TwentyFortyEightEngine>()),
-      renderer(std::make_unique<Renderer>(game, displayManager->getWidth(),
-                                          displayManager->getHeight())) {
-
-    inputManager->setGame(game.get());
-    inputManager->setupKeyCallback();
-
+    renderer(std::make_unique<Renderer>(game, displayManager->getWidth(), displayManager->getHeight())) 
+{
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
 
     ImGui_ImplGlfw_InitForOpenGL(displayManager->getWindow(), true);
     ImGui_ImplOpenGL3_Init("#version 130");
+
+    glfwSetWindowUserPointer(displayManager->getWindow(), game.get());
+    glfwSetKeyCallback(displayManager->getWindow(), keyCallback);
 }
+
 
 Application::~Application() {
     ImGui_ImplOpenGL3_Shutdown();
@@ -33,9 +32,10 @@ Application::~Application() {
     ImGui::DestroyContext();
 }
 
+
 void Application::run() {
     while (!displayManager->shouldClose()) {
-        inputManager->pollEvents();
+        glfwPollEvents();
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -50,7 +50,33 @@ void Application::run() {
     }
 }
 
+
 void Application::start() {
     Application app;
     app.run();
+}
+
+
+void Application::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+  TwentyFortyEightEngine* game = static_cast<TwentyFortyEightEngine*>(glfwGetWindowUserPointer(window));
+  if (!game) return;
+
+  if (action == GLFW_PRESS) {
+    if (!game->isGameOver()) {
+      switch (key) {
+        case GLFW_KEY_LEFT:
+          game->processMove(TwentyFortyEightEngine::LEFT);
+          break;
+        case GLFW_KEY_RIGHT:
+          game->processMove(TwentyFortyEightEngine::RIGHT);
+          break;
+        case GLFW_KEY_UP:
+          game->processMove(TwentyFortyEightEngine::UP);
+          break;
+        case GLFW_KEY_DOWN:
+          game->processMove(TwentyFortyEightEngine::DOWN);
+          break;
+      }
+    }
+  }
 }
