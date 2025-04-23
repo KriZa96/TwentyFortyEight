@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -9,20 +7,18 @@
 #include "Application.h"
 
 
-Application::Application() : 
-    displayManager(std::make_unique<DisplayManager>()),
-    game(std::make_shared<TwentyFortyEightEngine>()),
-    renderer(std::make_unique<Renderer>(game, displayManager->getWidth(), displayManager->getHeight())) 
+Application::Application() :
+    renderer(game, displayManager.getWidth(), displayManager.getHeight()) 
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
 
-    ImGui_ImplGlfw_InitForOpenGL(displayManager->getWindow(), true);
+    ImGui_ImplGlfw_InitForOpenGL(displayManager.getWindow(), true);
     ImGui_ImplOpenGL3_Init("#version 130");
 
-    glfwSetWindowUserPointer(displayManager->getWindow(), game.get());
-    glfwSetKeyCallback(displayManager->getWindow(), keyCallback);
+    glfwSetWindowUserPointer(displayManager.getWindow(), &game);
+    glfwSetKeyCallback(displayManager.getWindow(), keyCallback);
 }
 
 
@@ -34,19 +30,19 @@ Application::~Application() {
 
 
 void Application::run() {
-    while (!displayManager->shouldClose()) {
+    while (!displayManager.shouldClose()) {
         glfwPollEvents();
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        renderer->renderGame();
+        renderer.renderGame();
         ImGui::Render();
 
-        displayManager->clearScreen();
+        displayManager.clearScreen();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        displayManager->swapBuffers();
+        displayManager.swapBuffers();
     }
 }
 

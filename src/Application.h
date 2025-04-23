@@ -7,9 +7,9 @@
 
 class Application {
 private:
-	std::unique_ptr<DisplayManager> displayManager;
-	std::shared_ptr<TwentyFortyEightEngine> game;
-	std::unique_ptr<Renderer> renderer;
+	DisplayManager displayManager;
+	TwentyFortyEightEngine game;
+	Renderer renderer;
 
 public:
 	Application();

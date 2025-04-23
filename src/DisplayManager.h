@@ -6,16 +6,16 @@
 
 class DisplayManager {
 public:
-	DisplayManager();
-	~DisplayManager();
+    DisplayManager();
+    ~DisplayManager();
 
-	void createWindow();
-	GLFWwindow* getWindow() const;
-	int getWidth() const;
-	int getHeight() const;
-	void clearScreen();
-	void swapBuffers();
-	bool shouldClose() const;
+    void createWindow();
+    GLFWwindow* getWindow() const;
+    int getWidth() const;
+    int getHeight() const;
+    void clearScreen();
+    void swapBuffers();
+    bool shouldClose() const;
 
 private:
     GLFWwindow* window;
