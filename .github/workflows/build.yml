@@ -32,7 +32,7 @@ jobs:
       run: cmake --build out/build/x64-release --verbose
 
     - name: EXE Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: TwentyFortyEight
         path: out/build/x64-release/TwentyFortyEight.exe
