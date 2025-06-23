@@ -1,4 +1,4 @@
-name: Project Build
+name: Build Project
 
 on:
   push:
@@ -11,18 +11,21 @@ jobs:
     runs-on: windows-2022
 
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v4
-
-    - name: Install Ninja
-      uses: seanmiddleditch/gha-setup-ninja@v3
 
     - name: Setup MSVC
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x64
 
-    - name: Configure CMake
+    - name: Install Ninja
+      uses: seanmiddleditch/gha-setup-ninja@v3
+
+    - name: Set VCPKG_ROOT
+      run: echo "VCPKG_ROOT=${env:ProgramFiles(x86)}\\vcpkg" >> $env:GITHUB_ENV
+
+    - name: Configure (CMake preset x64-release)
       run: cmake --preset x64-release
 
     - name: Build
