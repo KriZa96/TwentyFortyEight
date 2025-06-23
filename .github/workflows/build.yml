@@ -29,4 +29,4 @@ jobs:
       run: cmake --preset x64-release
 
     - name: Build
-      run: cmake --build --preset x64-release
+      run: cmake --build out/build/x64-release --verbose
