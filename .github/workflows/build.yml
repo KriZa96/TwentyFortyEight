@@ -25,8 +25,8 @@ jobs:
     - name: Set VCPKG_ROOT
       run: echo "VCPKG_ROOT=${env:ProgramFiles(x86)}\\vcpkg" >> $env:GITHUB_ENV
 
-    - name: Configure (CMake preset x64-release)
-      run: cmake --preset x64-release
+    - name: Configure
+      run: cmake --preset ci-release
 
     - name: Build
-      run: cmake --build --preset x64-release --verbose
+      run: cmake --build --preset ci-release
