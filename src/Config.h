@@ -65,13 +65,12 @@ struct TileRenderConfig {
 };
 
 
-struct TileStyle {
-  ImVec4 background;
-  ImVec4 text;
-};
-
-
 struct TileColorConfig {
+  struct TileStyle {
+    ImVec4 background;
+    ImVec4 text;
+  };
+
   static inline const ImVec4 EMPTY_TILE = ImVec4(0.8f, 0.8f, 0.8f, 1.0f);
   static inline const ImVec4 TILE_2 = ImVec4(0.9f, 0.9f, 0.9f, 1.0f);
   static inline const ImVec4 TILE_4 = ImVec4(0.9f, 0.9f, 0.8f, 1.0f);

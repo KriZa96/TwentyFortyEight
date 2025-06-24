@@ -16,7 +16,7 @@ float TileRenderer::getTilePaddingSize() const { return tilePaddingSize_; }
 
 
 void TileRenderer::renderTile(int value, const ImVec2& gridStartPos, int row, int col) const {
-    const TileStyle style = TileColorConfig::getTileStyle(value);
+    const auto style = TileColorConfig::getTileStyle(value);
 	const ImVec2 tilePos = calculateTilePosition(gridStartPos, row, col);
 	const ImVec2 tileEndPos(tilePos.x + tileSize_, tilePos.y + tileSize_);
 
