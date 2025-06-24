@@ -90,130 +90,80 @@ bool TwentyFortyEightEngine::canMove() const {
 
 
 void TwentyFortyEightEngine::processMove(Direction direction) {
-    bool moved = false;
-    switch (direction) {
-        case LEFT:
-            moved = moveLeft();
-            break;
-        case RIGHT:
-            moved = moveRight();
-            break;
-        case UP:
-            moved = moveUp();
-            break;
-        case DOWN:
-            moved = moveDown();
-            break;
+  bool moved = makeMove(direction);
+  if (moved) {
+    addRandomTile();
+    if (!canMove()) {
+      gameOver = true;
     }
-
-    if (moved) {
-        addRandomTile();
-        if (!canMove()) {
-            gameOver = true;
-        }
-    }
+  }
 }
 
 
-bool TwentyFortyEightEngine::moveLeft() {
-    bool moved = false;
-    for (int i = 0; i < gridLength; i++) {
-        for (int j = 0; j < gridLength; j++) {
-            if (grid[i][j] != 0) {
-                int col = j;
-                while (col > 0 && grid[i][col - 1] == 0) {
-                    grid[i][col - 1] = grid[i][col];
-                    grid[i][col] = 0;
-                    col--;
-                    moved = true;
-                }
-                if (col > 0 && grid[i][col - 1] == grid[i][col]) {
-                    grid[i][col - 1] *= 2;
-                    score += grid[i][col - 1];
-                    if (grid[i][col - 1] == 2048) gameWon = true;
-                    grid[i][col] = 0;
-                    moved = true;
-                }
-            }
-        }
-    }
-    return moved;
+bool TwentyFortyEightEngine::isValidPosition(int row, int col) {
+  return row >= 0 && row < gridLength && col >= 0 && col < gridLength;
 }
 
 
-bool TwentyFortyEightEngine::moveRight() {
-    bool moved = false;
-    for (int i = 0; i < gridLength; i++) {
-        for (int j = gridLength - 2; j >= 0; j--) {
-            if (grid[i][j] != 0) {
-                int col = j;
-                while (col < gridLength - 1 && grid[i][col + 1] == 0) {
-                    grid[i][col + 1] = grid[i][col];
-                    grid[i][col] = 0;
-                    col++;
-                    moved = true;
-                }
-                if (col < gridLength - 1 && grid[i][col + 1] == grid[i][col]) {
-                    grid[i][col + 1] *= 2;
-                    score += grid[i][col + 1];
-                    if (grid[i][col + 1] == 2048) gameWon = true;
-                    grid[i][col] = 0;
-                    moved = true;
-                }
-            }
+bool TwentyFortyEightEngine::makeMove(Direction direction) {
+  bool moved = false;
+
+  int rowDirection = 0, columnDirection = 0;
+  int startRow = 0, endRow = gridLength, stepRow = 1;
+  int startCol = 0, endCol = gridLength, stepCol = 1;
+
+  switch (direction) {
+    case LEFT:
+      rowDirection = 0, columnDirection = -1;
+      break;
+    case RIGHT:
+      rowDirection = 0, columnDirection = 1;
+      startCol = gridLength - 2, endCol = -1, stepCol = -1;
+      break;
+    case UP:
+      rowDirection = -1, columnDirection = 0;
+      break;
+    case DOWN:
+      rowDirection = 1, columnDirection = 0;
+      startRow = gridLength - 2, endRow = -1, stepRow = -1;
+      break;
+  }
+
+  for (int i = startRow; i != endRow; i += stepRow) {
+    for (int j = startCol; j != endCol; j += stepCol) {
+      if (grid[i][j] != 0) {
+        int row = i, col = j;
+
+        // Slide tile as far as possible
+        while (
+            isValidPosition(row + rowDirection, col + columnDirection) &&
+            grid[row + rowDirection][col + columnDirection] == 0
+        ) 
+        {
+            grid[row + rowDirection][col + columnDirection] = grid[row][col];
+            grid[row][col] = 0;
+            row += rowDirection;
+            col += columnDirection;
+            moved = true;
         }
-    }
-    return moved;
-}
 
-
-bool TwentyFortyEightEngine::moveUp() {
-    bool moved = false;
-    for (int j = 0; j < gridLength; j++) {
-        for (int i = 0; i < gridLength; i++) {
-            if (grid[i][j] != 0) {
-                int row = i;
-                while (row > 0 && grid[row - 1][j] == 0) {
-                    grid[row - 1][j] = grid[row][j];
-                    grid[row][j] = 0;
-                    row--;
-                    moved = true;
-                }
-                if (row > 0 && grid[row - 1][j] == grid[row][j]) {
-                    grid[row - 1][j] *= 2;
-                    score += grid[row - 1][j];
-                    if (grid[row - 1][j] == 2048) gameWon = true;
-                    grid[row][j] = 0;
-                    moved = true;
-                }
-            }
+        // Checking for merge
+        if (
+            isValidPosition(row + rowDirection, col + columnDirection) &&
+            grid[row + rowDirection][col + columnDirection] == grid[row][col]
+        ) 
+        {
+            grid[row + rowDirection][col + columnDirection] *= 2;
+            score += grid[row + rowDirection][col + columnDirection];
+            // If the merged tile is 2048, set gameWon to true, that does not
+            // end the game, but allows to display a win message
+            if (grid[row + rowDirection][col + columnDirection] == 2048) gameWon = true;
+            grid[row][col] = 0;
+            moved = true;
         }
+      }
     }
-    return moved;
-}
+  }
 
-
-bool TwentyFortyEightEngine::moveDown() {
-    bool moved = false;
-    for (int j = 0; j < gridLength; j++) {
-        for (int i = gridLength - 2; i >= 0; i--) {
-            if (grid[i][j] != 0) {
-                int row = i;
-                while (row < gridLength - 1 && grid[row + 1][j] == 0) {
-                    grid[row + 1][j] = grid[row][j];
-                    grid[row][j] = 0;
-                    row++;
-                    moved = true;
-                }
-                if (row < gridLength - 1 && grid[row + 1][j] == grid[row][j]) {
-                    grid[row + 1][j] *= 2;
-                    score += grid[row + 1][j];
-                    if (grid[row + 1][j] == 2048) gameWon = true;
-                    grid[row][j] = 0;
-                    moved = true;
-                }
-            }
-        }
-    }
-    return moved;
+  return moved;
 }

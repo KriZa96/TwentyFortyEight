@@ -28,8 +28,6 @@ private:
 
 	void addRandomTile();
 	bool canMove() const;
-	bool moveLeft();
-	bool moveRight();
-	bool moveUp();
-	bool moveDown();
+    bool makeMove(Direction direction);
+    bool isValidPosition(int row, int col);
 };
