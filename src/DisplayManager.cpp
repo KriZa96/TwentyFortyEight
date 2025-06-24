@@ -1,6 +1,8 @@
 #pragma once
 
 #include <iostream>
+
+#include "Config.h"
 #include "DisplayManager.h"
 
 #ifdef _WIN32
@@ -12,8 +14,10 @@
 DisplayManager::DisplayManager() {
     glfwInit();
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,
+                   DisplayConfig::OPENGL_VERSION_MAJOR);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,
+                   DisplayConfig::OPENGL_VERSION_MINOR);
 
     createWindow();
 }
@@ -31,7 +35,7 @@ void DisplayManager::createWindow() {
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
     glfwGetMonitorWorkarea(monitor, nullptr, nullptr, &width, &height);
 
-    window = glfwCreateWindow(width, height, "2048 Game", monitor, nullptr);
+    window = glfwCreateWindow(width, height, DisplayConfig::WINDOW_TITLE, monitor, nullptr);
     glfwGetFramebufferSize(window, &width, &height);
 
     if (!window) {
@@ -40,7 +44,7 @@ void DisplayManager::createWindow() {
     }
 
     glfwMakeContextCurrent(window);
-    glfwSwapInterval(1);
+    glfwSwapInterval(DisplayConfig::VSYNC_ENABLED);
 }
 
 
@@ -55,7 +59,12 @@ int DisplayManager::getHeight() const { return height; }
 
 void DisplayManager::clearScreen() {
     glViewport(0, 0, width, height);
-    glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
+    glClearColor(
+        DisplayConfig::BACKGROUND_COLOR.x,
+        DisplayConfig::BACKGROUND_COLOR.y,
+        DisplayConfig::BACKGROUND_COLOR.z,
+        DisplayConfig::BACKGROUND_COLOR.w
+    );
     glClear(GL_COLOR_BUFFER_BIT);
 }
 

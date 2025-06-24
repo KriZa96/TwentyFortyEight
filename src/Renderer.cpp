@@ -1,4 +1,6 @@
+#pragma once
 
+#include "Config.h"
 #include "Renderer.h"
 #include <format>
 
@@ -7,8 +9,10 @@ Renderer::Renderer(TwentyFortyEightEngine& game, int windowWidth, int windowHeig
     windowWidth_(windowWidth),
     windowHeight_(windowHeight),
     game_(game),
-    tileRenderer_(windowHeight / 8.f, windowHeight / 8.f / 8.f)
-{}
+    tileRenderer_(
+        windowHeight / TileRenderConfig::TILE_SIZE_DIVISOR,
+        windowHeight / TileRenderConfig::TILE_SIZE_DIVISOR / TileRenderConfig::TILE_PADDING_DIVISOR
+    ) {}
 
 
 void Renderer::renderGame() const {
@@ -28,40 +32,43 @@ void Renderer::renderGame() const {
 void Renderer::setupGameWindow() const {
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(windowWidth_, windowHeight_));
-    ImGui::Begin("2048 Game", nullptr, ImGuiWindowFlags_NoDecoration);
-    ImGui::SetWindowFontScale(4);
+    ImGui::Begin(DisplayConfig::WINDOW_TITLE, nullptr, ImGuiWindowFlags_NoDecoration);
+    ImGui::SetWindowFontScale(UIConfig::WINDOW_FONT_SCALE);
 }
 
 
 void Renderer::renderGameControls() const {
-    const ImVec2 buttonSize(windowWidth_ * 0.10f, windowHeight_ * 0.05f);
-
-    ImGui::SetCursorPos(ImVec2(windowWidth_ / 2 - windowWidth_ * 0.105f, windowHeight_ * 0.02f));
-    if (ImGui::Button("New Game", buttonSize)) game_.reset();
+    const ImVec2 buttonSize(windowWidth_ * UIConfig::BUTTON_WIDTH_RATIO, windowHeight_ * UIConfig::BUTTON_HEIGHT_RATIO);
+    ImGui::SetCursorPos(
+        ImVec2(windowWidth_ / 2 - windowWidth_ * (UIConfig::BUTTON_WIDTH_RATIO + UIConfig::BUTTON_SPACING_RATIO / 2), 
+        windowHeight_ * UIConfig::VERTICAL_SPACING_RATIO
+    ));
+    
+    if (ImGui::Button(UIConfig::NEW_GAME_BUTTON_TEXT, buttonSize)) game_.reset();
     ImGui::SameLine();
-    ImGui::Dummy(ImVec2(windowWidth_ * 0.02f, 0));
+    ImGui::Dummy(ImVec2(windowWidth_ * UIConfig::BUTTON_SPACING_RATIO, 0));
     ImGui::SameLine();
-    if (ImGui::Button("Exit", buttonSize)) exit(0);
+    if (ImGui::Button(UIConfig::EXIT_BUTTON_TEXT, buttonSize)) exit(0);
 
-    ImGui::Dummy(ImVec2(0, windowHeight_ * 0.02f));
+    ImGui::Dummy(ImVec2(0, windowHeight_ * UIConfig::VERTICAL_SPACING_RATIO));
     ImGui::Separator();
 }
 
 
 void Renderer::renderScoreText(const ImVec2& gridStartPos) const {
-  std::string scoreText = std::format("Score: {}", game_.getScore());
-  const float verticalOffset = gridStartPos.y - (tileRenderer_.getTilePaddingSize() * 3);
+  std::string scoreText =
+      std::format(UIConfig::SCORE_TEXT_FORMAT, game_.getScore());
+  const float verticalOffset =
+      gridStartPos.y - (tileRenderer_.getTilePaddingSize() *
+                        TileRenderConfig::SCORE_TEXT_OFFSET);
 
-  renderCenteredText(scoreText.c_str(), ImVec4(1.0f, 1.0f, 1.0f, 1.0f), verticalOffset);
+  renderCenteredText(scoreText.c_str(), UIConfig::LIGHT_TEXT, verticalOffset);
 }
 
 
 void Renderer::renderInfoText(const ImVec2& gridStartPos) const {
-  const float verticalOffset = gridStartPos.y - (tileRenderer_.getTilePaddingSize() * 6);
-
-  renderCenteredText("Use arrow keys to move tiles",
-                     ImVec4(1.0f, 1.0f, 1.0f, 1.0f),
-                     verticalOffset);
+  const float verticalOffset = gridStartPos.y - (tileRenderer_.getTilePaddingSize() * TileRenderConfig::INFO_TEXT_OFFSET);
+  renderCenteredText(UIConfig::INSTRUCTION_TEXT, UIConfig::LIGHT_TEXT, verticalOffset);
 }
 
 
@@ -78,7 +85,11 @@ void Renderer::renderGameGrid(const ImVec2& gridStartPos) const {
                 game_.getGridLength() +
             tileRenderer_.getTilePaddingSize()
     );
-    drawList->AddRectFilled(gridStartPos, gridEndPos, IM_COL32(187, 173, 160, 255));
+    drawList->AddRectFilled(
+        gridStartPos, 
+        gridEndPos,
+        ImGui::ColorConvertFloat4ToU32(DisplayConfig::GRID_BACKGROUND_COLOR)
+    );
 
     for (int row = 0; row < game_.getGridLength(); row++) {
         for (int col = 0; col < game_.getGridLength(); col++) {
@@ -92,22 +103,20 @@ void Renderer::renderGameStatus(const ImVec2& gridStartPos) const {
 
     const float verticalOffset = 
         gridStartPos.y + tileRenderer_.getTileSize() * game_.getGridLength() +
-        tileRenderer_.getTilePaddingSize() * (game_.getGridLength() + 2);
+        tileRenderer_.getTilePaddingSize() * (game_.getGridLength() + TileRenderConfig::STATUS_TEXT_OFFSET);
 
-    const char* statusText = game_.isGameOver() ? "Game Over!" : "You Win!";
-    const ImVec4 statusColor = game_.isGameOver()
-                                    ? ImVec4(1.0f, 0.0f, 0.0f, 1.0f)
-                                    : ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
+    const char* statusText = game_.isGameOver() ? UIConfig::GAME_OVER_TEXT : UIConfig::GAME_WIN_TEXT;
+    const ImVec4 statusColor = game_.isGameOver() ? UIConfig::GAME_OVER_COLOR : UIConfig::GAME_WIN_COLOR;
 
     renderCenteredText(statusText, statusColor, verticalOffset);
 
-    const char* message =
-        game_.isGameOver()
-            ? "Press 'New Game' to play again."
-            : "Continue playing or press 'New Game' to start over.";
+    const char* message = game_.isGameOver() ? UIConfig::GAME_OVER_MESSAGE : UIConfig::GAME_WIN_MESSAGE;
 
-    renderCenteredText(message, ImVec4(1.0f, 1.0f, 1.0f, 1.0f),
-                        verticalOffset + tileRenderer_.getTilePaddingSize() * (game_.getGridLength() - 1));
+    renderCenteredText(
+        message, 
+        UIConfig::LIGHT_TEXT,
+        verticalOffset + tileRenderer_.getTilePaddingSize() * (game_.getGridLength() - 1)
+    );
 }
 
 void Renderer::renderCenteredText(const char* text, const ImVec4& color, float yPos) const {
@@ -122,7 +131,7 @@ ImVec2 Renderer::calculateGridStartPosition() const {
         game_.getGridLength() * tileRenderer_.getTileSize() +
         (game_.getGridLength() + 1) * tileRenderer_.getTilePaddingSize();
 
-    startPos.y += (windowHeight_ * 0.8f - gridSize) / 2.f;
+    startPos.y += (windowHeight_ * UIConfig::GRID_AREA_RATIO - gridSize) / 2.f;
     startPos.x += (windowWidth_ - gridSize) / 2.f;
 
     return startPos;

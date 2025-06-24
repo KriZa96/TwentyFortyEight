@@ -1,19 +1,23 @@
+#pragma once
+
 #include <random>
 #include <vector>
 
+#include "Config.h"
 #include "TwentyFortyEightEngine.h"
 
 
   TwentyFortyEightEngine::TwentyFortyEightEngine() : 
-      gridLength(4),
+      gridLength(GameConfig::GRID_SIZE),
       grid(gridLength, std::vector<int>(gridLength, 0)),
       score(0),
       gameOver(false),
       gameWon(false),
       gen(rd()) 
   {
-    addRandomTile();
-    addRandomTile();
+      for (int i = 0; i < GameConfig::INITIAL_TILES_COUNT; ++i) {
+          addRandomTile();
+      }
   }
 
 
@@ -69,8 +73,8 @@ void TwentyFortyEightEngine::addRandomTile() {
 
     // Generating a random value (2 or 4) to place in the selected cell
     // 90% chance for 2, 10% chance for 4
-    std::uniform_int_distribution<> disValue(1, 10);
-    grid[row][col] = (disValue(gen) <= 9) ? 2 : 4;
+    std::uniform_int_distribution<> disValue(1, GameConfig::PROBABILITY_RANGE);
+    grid[row][col] = (disValue(gen) <= GameConfig::TILE_2_PROBABILITY) ? 2 : 4;
 }
 
 
@@ -157,7 +161,7 @@ bool TwentyFortyEightEngine::makeMove(Direction direction) {
             score += grid[row + rowDirection][col + columnDirection];
             // If the merged tile is 2048, set gameWon to true, that does not
             // end the game, but allows to display a win message
-            if (grid[row + rowDirection][col + columnDirection] == 2048) gameWon = true;
+            if (grid[row + rowDirection][col + columnDirection] == GameConfig::WINNING_TILE_VALUE) gameWon = true;
             grid[row][col] = 0;
             moved = true;
         }

@@ -4,6 +4,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+#include "Config.h"
 #include "Application.h"
 
 
@@ -15,7 +16,7 @@ Application::Application() :
     ImGui::StyleColorsDark();
 
     ImGui_ImplGlfw_InitForOpenGL(displayManager.getWindow(), true);
-    ImGui_ImplOpenGL3_Init("#version 130");
+    ImGui_ImplOpenGL3_Init(DisplayConfig::OPENGL_VERSION_STRING);
 
     glfwSetWindowUserPointer(displayManager.getWindow(), &game);
     glfwSetKeyCallback(displayManager.getWindow(), keyCallback);
