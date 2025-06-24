@@ -18,7 +18,7 @@ public:
 	std::uint8_t getGridLength() const;
 
 private:
-	std::uint8_t gridLength;
+	const std::uint8_t gridLength;
 	std::vector<std::vector<int>> grid;
 	int score;
 	bool gameOver;

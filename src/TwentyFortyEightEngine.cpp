@@ -21,11 +21,9 @@ std::uint8_t TwentyFortyEightEngine::getGridLength() const { return gridLength; 
 
 
 void TwentyFortyEightEngine::reset() {
-    for (int i = 0; i < gridLength; i++) {
-        for (int j = 0; j < gridLength; j++) {
-            grid[i][j] = 0;
-        }
-    }
+    std::for_each(grid.begin(), grid.end(), [](std::vector<int>& row) {
+        std::fill(row.begin(), row.end(), 0);
+    });
     score = 0;
     gameOver = false;
     gameWon = false;
@@ -48,6 +46,7 @@ int TwentyFortyEightEngine::getTileValue(int row, int col) const {
 }
 
 void TwentyFortyEightEngine::addRandomTile() {
+    // Getting all empty cells in the grid
     std::vector<std::pair<int, int>> emptyCells;
     for (int i = 0; i < gridLength; i++) {
         for (int j = 0; j < gridLength; j++) {
@@ -57,15 +56,20 @@ void TwentyFortyEightEngine::addRandomTile() {
         }
     }
 
+    // If there are no empty cells, we cannot add a new tile
+    // But maybe we can still move, so game is not over
     if (emptyCells.empty()) return;
 
+    // Generating a random index for empty cells vector
     std::uniform_int_distribution<> disCells(0, static_cast<int>(emptyCells.size()) - 1);
-    std::uniform_int_distribution<> disValue(1, 10);
-
     int idx = disCells(gen);
+    // Getting the row and column of the selected empty cell
     int row = emptyCells[idx].first;
     int col = emptyCells[idx].second;
 
+    // Generating a random value (2 or 4) to place in the selected cell
+    // 90% chance for 2, 10% chance for 4
+    std::uniform_int_distribution<> disValue(1, 10);
     grid[row][col] = (disValue(gen) <= 9) ? 2 : 4;
 }
 
@@ -73,22 +77,14 @@ void TwentyFortyEightEngine::addRandomTile() {
 bool TwentyFortyEightEngine::canMove() const {
     for (int i = 0; i < gridLength; i++) {
         for (int j = 0; j < gridLength; j++) {
-        if (grid[i][j] == 0) return true;
+            // If there is empty cell we can move
+            if (grid[i][j] == 0) return true;
+            // if there are mergable cells in some column we can merge
+            if (i < gridLength - 1 && grid[i][j] == grid[i + 1][j]) return true;
+            // if there are mergable cells in some row we can merge
+            if (j < gridLength - 1 && grid[i][j] == grid[i][j + 1]) return true;
         }
     }
-
-    for (int i = 0; i < gridLength; i++) {
-        for (int j = 0; j < gridLength - 1; j++) {
-        if (grid[i][j] == grid[i][j + 1]) return true;
-        }
-    }
-
-    for (int i = 0; i < gridLength - 1; i++) {
-        for (int j = 0; j < gridLength; j++) {
-        if (grid[i][j] == grid[i + 1][j]) return true;
-        }
-    }
-
     return false;
 }
 
